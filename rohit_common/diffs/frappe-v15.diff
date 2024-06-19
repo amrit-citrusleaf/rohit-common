@@ -1,0 +1,39 @@
+diff --git a/frappe/patches/v13_0/rename_desk_page_to_workspace.py b/frappe/patches/v13_0/rename_desk_page_to_workspace.py
+index e4d26a5..435c4c5 100644
+--- a/frappe/patches/v13_0/rename_desk_page_to_workspace.py
++++ b/frappe/patches/v13_0/rename_desk_page_to_workspace.py
+@@ -12,9 +12,17 @@ def execute():
+ 			rename_doc("DocType", "Desk Page", "Workspace")
+ 			frappe.flags.ignore_route_conflict_validation = False
+ 
+-	rename_doc("DocType", "Desk Chart", "Workspace Chart", ignore_if_exists=True)
+-	rename_doc("DocType", "Desk Shortcut", "Workspace Shortcut", ignore_if_exists=True)
+-	rename_doc("DocType", "Desk Link", "Workspace Link", ignore_if_exists=True)
++	doctypes_to_rename = (
++		("Desk Chart", "Workspace Chart"),
++		("Desk Shortcut", "Workspace Shortcut"),
++		("Desk Link", "Workspace Link")
++	)
++
++	for old_name, new_name in doctypes_to_rename:
++		if frappe.db.exists("DocType", old_name):
++			rename_doc("DocType", old_name, new_name)
++
++	frappe.clear_cache()
+ 
+ 	frappe.reload_doc("desk", "doctype", "workspace", force=True)
+ 	frappe.reload_doc("desk", "doctype", "workspace_link", force=True)
+diff --git a/frappe/patches/v14_0/setup_likes_from_feedback.py b/frappe/patches/v14_0/setup_likes_from_feedback.py
+index 8bacaf5..c5b2747 100644
+--- a/frappe/patches/v14_0/setup_likes_from_feedback.py
++++ b/frappe/patches/v14_0/setup_likes_from_feedback.py
+@@ -4,6 +4,9 @@ import frappe
+ def execute():
+ 	frappe.reload_doctype("Comment")
+ 
++	if not frappe.db.exists("DocType", "Feedback"):
++		return
++
+ 	if frappe.db.count("Feedback") > 20000:
+ 		frappe.db.auto_commit_on_many_writes = True
+ 

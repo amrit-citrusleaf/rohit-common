@@ -1,0 +1,54 @@
+diff --git a/erpnext/patches.txt b/erpnext/patches.txt
+index 4825e76..a7d792e 100644
+--- a/erpnext/patches.txt
++++ b/erpnext/patches.txt
+@@ -141,7 +141,7 @@ erpnext.patches.v12_0.fix_quotation_expired_status
+ erpnext.patches.v12_0.rename_pos_closing_doctype
+ erpnext.patches.v13_0.replace_pos_payment_mode_table #2020-12-29
+ execute:frappe.delete_doc_if_exists("Page", "appointment-analytic")
+-execute:frappe.rename_doc("Desk Page", "Getting Started", "Home", force=True)
++#execute:frappe.rename_doc("Desk Page", "Getting Started", "Home", force=True)
+ erpnext.patches.v12_0.unset_customer_supplier_based_on_type_of_item_price
+ erpnext.patches.v12_0.set_valid_till_date_in_supplier_quotation
+ erpnext.patches.v12_0.set_serial_no_status #2020-05-21
+@@ -177,7 +177,7 @@ erpnext.patches.v13_0.rename_issue_doctype_fields
+ erpnext.patches.v13_0.change_default_pos_print_format
+ erpnext.patches.v13_0.set_youtube_video_id
+ erpnext.patches.v13_0.set_app_name
+-erpnext.patches.v13_0.print_uom_after_quantity_patch
++#erpnext.patches.v13_0.print_uom_after_quantity_patch
+ erpnext.patches.v13_0.set_payment_channel_in_payment_gateway_account
+ execute:frappe.delete_doc("Report", "Quoted Item Comparison")
+ erpnext.patches.v13_0.update_member_email_address
+@@ -246,7 +246,7 @@ erpnext.patches.v13_0.agriculture_deprecation_warning
+ erpnext.patches.v13_0.hospitality_deprecation_warning
+ erpnext.patches.v13_0.update_asset_quantity_field
+ erpnext.patches.v13_0.delete_bank_reconciliation_detail
+-erpnext.patches.v13_0.enable_provisional_accounting
++#erpnext.patches.v13_0.enable_provisional_accounting
+ erpnext.patches.v13_0.non_profit_deprecation_warning
+ erpnext.patches.v13_0.show_india_localisation_deprecation_warning
+ erpnext.patches.v13_0.show_hr_payroll_deprecation_warning
+@@ -259,7 +259,7 @@ erpnext.patches.v14_0.update_reference_due_date_in_journal_entry
+ erpnext.patches.v15_0.saudi_depreciation_warning
+ erpnext.patches.v15_0.delete_saudi_doctypes
+ erpnext.patches.v14_0.show_loan_management_deprecation_warning
+-erpnext.patches.v14_0.clear_reconciliation_values_from_singles
++#erpnext.patches.v14_0.clear_reconciliation_values_from_singles
+ execute:frappe.rename_doc("Report", "TDS Payable Monthly", "Tax Withholding Details", force=True)
+ 
+ [post_model_sync]
+diff --git a/erpnext/patches/v13_0/update_subscription_status_in_memberships.py b/erpnext/patches/v13_0/update_subscription_status_in_memberships.py
+index d7c8499..ec1f848 100644
+--- a/erpnext/patches/v13_0/update_subscription_status_in_memberships.py
++++ b/erpnext/patches/v13_0/update_subscription_status_in_memberships.py
+@@ -2,6 +2,9 @@ import frappe
+ 
+ 
+ def execute():
++	if 'non_profit' not in frappe.get_installed_apps():
++		return
++
+ 	if frappe.db.exists("DocType", "Member"):
+ 		frappe.reload_doc("Non Profit", "doctype", "Member")
+ 
