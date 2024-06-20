@@ -44,7 +44,7 @@ override_whitelisted_methods = {  # Below mentod would also take into account th
 
 # Installation
 # ------------
-
+before_migrate = "rohit_common.before_migrate_patches.execute"
 # before_install = "rohit_common.install.before_install"
 # after_install = "rohit_common.install.after_install"
 
